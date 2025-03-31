@@ -1,0 +1,82 @@
+services:
+  usuario-service:
+    build: ./usuario
+    container_name: usuario-service
+    ports:
+      - "8081:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db_usuario:5432/usuarios
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+    depends_on:
+      - db_usuarios
+    networks:
+      - reserva-network
+
+  db_usuario:
+    image: postgres:15
+    container_name: db_usuario
+    environment:
+      POSTGRES_DB: usuarios
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+    ports:
+      - "5432:5432"
+    networks:
+      - reserva-network
+
+  sala-service:
+    build: ./sala
+    container_name: sala-service
+    ports:
+      - "8082:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db_sala:5432/sala
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+    depends_on:
+      - db_sala
+    networks:
+      - reserva-network
+
+  db_sala:
+    image: postgres:15
+    container_name: db_sala
+    environment:
+      POSTGRES_DB: sala
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+    ports:
+      - "5434:5432"
+    networks:
+      - reserva-network
+
+  reserva-service:
+    build: ./reserva
+    container_name: reserva-service
+    ports:
+      - "8083:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db_reserva:5432/reserva
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+    depends_on:
+      - db_reserva
+    networks:
+      - reserva-network
+
+  db_reserva:
+    image: postgres:15
+    container_name: db_reserva
+    environment:
+      POSTGRES_DB: reserva
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+    ports:
+      - "5436:5432"
+    networks:
+      - reserva-network
+
+networks:
+  reserva-network:
+    driver: bridge
